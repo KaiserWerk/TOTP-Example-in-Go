@@ -136,8 +136,6 @@ func login2FAHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		valid := totp.Validate(code, user.TotpSecret)
-		delete(pendingLogins, loginToken) // Token nur einmal verwenden
-
 		if !valid {
 			data["Message"] = "invalid authentication code"
 			err = templates.ExecuteTemplate(w, "login_2fa.html", data)
@@ -147,10 +145,12 @@ func login2FAHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Token nur einmal verwenden
+		delete(pendingLogins, loginToken)
+
 		// 2FA erfolgreich → Session erstellen
 		sessionID := randomString()
 		sessions[sessionID] = user.ID
-		delete(pendingLogins, loginToken)
 
 		// set a cookie with a session ID
 		http.SetCookie(w, &http.Cookie{
