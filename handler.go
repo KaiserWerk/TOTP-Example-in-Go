@@ -13,7 +13,24 @@ import (
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
+	data := map[string]any{}
+	cookie, err := r.Cookie("session_id")
+	if err == nil {
+		sessionID := cookie.Value
+		userID, ok := sessions[sessionID]
+		if ok {
+			user, err := findUserByID(userID)
+			if err == nil {
+				data["Email"] = user.Email
+			}
+		}
 
+	}
+
+	err = templates.ExecuteTemplate(w, "dashboard.html", data)
+	if err != nil {
+		fmt.Println("Error executing template:", err)
+	}
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -270,4 +287,32 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	// back to start
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func protectedPageHandler(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session_id")
+	if err != nil {
+		http.Error(w, "Cookie not found or empty", http.StatusUnauthorized)
+		return
+	}
+
+	sessionID := cookie.Value
+	userID, ok := sessions[sessionID]
+	if !ok {
+		http.Error(w, "UserID not found", http.StatusUnauthorized)
+		return
+	}
+
+	user, err := findUserByID(userID)
+	if err != nil {
+		http.Error(w, "User not found: "+err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	data := map[string]any{}
+	data["Email"] = user.Email
+	err = templates.ExecuteTemplate(w, "protected.html", data)
+	if err != nil {
+		fmt.Println("Error executing template:", err)
+	}
 }

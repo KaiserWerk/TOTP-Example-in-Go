@@ -9,11 +9,17 @@
 <body>
     <h1>Welcome to your Dashboard</h1>
     <p>This is the starting point of trying out 2FA with TOTP.</p>
+    {{ if .Email }}
+    <p>Logged in as: {{ .Email }}</p>
+    {{ else }}
+    <p>You are not logged in.</p>
+    {{ end }}
     <ul>
         <li><a href="/register">Register</a></li>
         <li><a href="/login">Login</a></li>
         <li><a href="/setup_2fa">Setup Two-Factor Authentication</a></li>
         <li><a href="/login/2fa">Login with 2FA</a></li>
+        <li><a href="/protected">Protected Page</a></li>
         <li><a href="/logout">Logout</a></li>
     </ul>
     
