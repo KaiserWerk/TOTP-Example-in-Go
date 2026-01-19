@@ -64,5 +64,5 @@ func findUserByID(userID int) (*User, error) {
 func randomString() string {
 	b := make([]byte, 20)
 	_, _ = rand.Read(b)
-	return base64.RawStdEncoding.EncodeToString(b)
+	return base64.RawURLEncoding.EncodeToString(b)
 }

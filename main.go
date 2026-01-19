@@ -17,6 +17,7 @@ func main() {
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/setup_2fa", setup2FAHandler)
 	http.HandleFunc("/logout", logoutHandler)
+	http.HandleFunc("/protected", protectedPageHandler)
 
 	fmt.Println("server listening on port 8000...")
 	http.ListenAndServe(":8000", nil)

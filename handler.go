@@ -283,7 +283,11 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	delete(sessions, sessionID)
 
 	// remove session cookie
-	http.SetCookie(w, &http.Cookie{})
+	http.SetCookie(w, &http.Cookie{
+		Name:   "session_id",
+		Value:  "",
+		MaxAge: -1,
+	})
 
 	// back to start
 	http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -292,20 +296,23 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 func protectedPageHandler(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_id")
 	if err != nil {
-		http.Error(w, "Cookie not found or empty", http.StatusUnauthorized)
+		fmt.Println("protected page: cookie not found")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
 	sessionID := cookie.Value
 	userID, ok := sessions[sessionID]
 	if !ok {
-		http.Error(w, "UserID not found", http.StatusUnauthorized)
+		fmt.Println("protected page: session not found")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
 	user, err := findUserByID(userID)
 	if err != nil {
-		http.Error(w, "User not found: "+err.Error(), http.StatusUnauthorized)
+		fmt.Println("protected page: user not found")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
