@@ -9,8 +9,9 @@
 <body>
     <h1>Welcome to your Dashboard</h1>
     <p>This is the starting point of trying out 2FA with TOTP.</p>
-    {{ if .Email }}
-    <p>Logged in as: {{ .Email }}</p>
+    {{ if .User }}
+    <p>Logged in as: {{ .User.Email }}</p>
+    <p>2FA Enabled: {{ .User.TotpEnabled }}</p>
     {{ else }}
     <p>You are not logged in.</p>
     {{ end }}

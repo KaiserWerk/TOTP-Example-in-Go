@@ -21,7 +21,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		if ok {
 			user, err := findUserByID(userID)
 			if err == nil {
-				data["Email"] = user.Email
+				data["User"] = user
 			}
 		}
 
@@ -36,6 +36,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	// remove leftover session cookie
 	http.SetCookie(w, &http.Cookie{
+		Path:   "/",
 		Name:   "session_id",
 		Value:  "",
 		MaxAge: -1,
@@ -83,6 +84,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			sessionID := randomString()
 			sessions[sessionID] = user.ID
 			http.SetCookie(w, &http.Cookie{
+				Path:  "/",
 				Name:  "session_id",
 				Value: sessionID,
 			})
@@ -154,6 +156,7 @@ func login2FAHandler(w http.ResponseWriter, r *http.Request) {
 
 		// set a cookie with a session ID
 		http.SetCookie(w, &http.Cookie{
+			Path:  "/",
 			Name:  "session_id",
 			Value: sessionID,
 		})
@@ -284,6 +287,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	// remove session cookie
 	http.SetCookie(w, &http.Cookie{
+		Path:   "/",
 		Name:   "session_id",
 		Value:  "",
 		MaxAge: -1,

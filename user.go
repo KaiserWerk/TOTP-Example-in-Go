@@ -15,8 +15,7 @@ type User struct {
 }
 
 var users = []*User{
-	{ID: 1, Email: "alice@example.com", Password: "password123"},
-	{ID: 2, Email: "bob@example.com", Password: "password456"},
+	{ID: 1, Email: "bob@example.com", Password: "test"},
 }
 
 // loginToken -> userID
